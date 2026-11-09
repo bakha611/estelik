@@ -10,12 +10,18 @@ docker compose version >/dev/null || { echo "Docker Compose v2 plugin missing.";
 
 if [[ ! -f .env ]]; then
   cp .env.example .env
-  pw=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
-  sed -i.bak "s/^DB_PASSWORD=.*/DB_PASSWORD=${pw}/" .env && rm -f .env.bak
   if [[ -n "${1:-}" ]]; then
     sed -i.bak "s|^UPLOAD_LOCATION=.*|UPLOAD_LOCATION=${1}|" .env && rm -f .env.bak
   fi
-  echo "Created server/.env with a random DB password."
+  echo "Created server/.env"
+fi
+
+# Never run with the placeholder password (only safe to change before the DB is first created).
+if grep -q '^DB_PASSWORD=change_me$' .env; then
+  # `tr` dies of SIGPIPE when `head` closes the pipe; that is expected, not an error.
+  pw=$( (LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom || true) | head -c 32 )
+  sed -i.bak "s/^DB_PASSWORD=.*/DB_PASSWORD=${pw}/" .env && rm -f .env.bak
+  echo "Generated a random DB password in server/.env"
 fi
 
 # shellcheck disable=SC1091

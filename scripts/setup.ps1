@@ -11,10 +11,10 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
 if (-not (Test-Path .env)) {
   $chars = [char[]]'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   $pw = -join (1..32 | ForEach-Object { $chars | Get-Random })
-  $env = Get-Content .env.example
-  $env = $env -replace '^DB_PASSWORD=.*', "DB_PASSWORD=$pw"
-  if ($Library) { $env = $env -replace '^UPLOAD_LOCATION=.*', "UPLOAD_LOCATION=$Library" }
-  Set-Content -Path .env -Value $env -Encoding ascii
+  $lines = Get-Content .env.example
+  $lines = $lines -replace '^DB_PASSWORD=.*', "DB_PASSWORD=$pw"
+  if ($Library) { $lines = $lines -replace '^UPLOAD_LOCATION=.*', "UPLOAD_LOCATION=$Library" }
+  Set-Content -Path .env -Value $lines -Encoding ascii
   Write-Host "Created server\.env with a random DB password."
 }
 
