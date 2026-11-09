@@ -23,25 +23,38 @@ secure access from outside the house.
 
 ## Quick start (home PC)
 
-Requirements: Docker + Compose v2, 4 GB+ RAM (6–8 GB comfortable), a disk with room
-for 23 GB today plus growth (~2× headroom recommended).
+The host is the **home PC on Windows 11** (Docker Desktop + WSL2). It stays home and
+always on; phone, Mac and laptop are just clients. Needs 8 GB+ RAM and a disk with room
+for the 23 GB now plus growth (~2× headroom).
 
-```bash
-git clone https://github.com/bakha611/estelik.git && cd estelik
-./scripts/setup.sh /mnt/data/estelik/library      # Linux
-# .\scripts\setup.ps1 -Library "D:/estelik/library"   # Windows (Docker Desktop)
+PowerShell **as Administrator**:
+
+```powershell
+git clone https://github.com/bakha611/estelik.git
+cd estelik
+.\scripts\setup.ps1          # asks which disk, detects an NVIDIA GPU, opens port 2283, starts Immich
 ```
 
-Open `http://<pc-ip>:2283`, create the admin account, then:
+Open `http://localhost:2283`, create the admin account, make an API key
+(Account Settings → API Keys), then pull in the existing folder:
 
-1. [Remote access: phone + Mac via Tailscale](docs/remote-access.md)
-2. [Import the existing ~23 GB](docs/import.md)
-3. [Backups](docs/backups.md) — do this before deleting anything from Google/iCloud
+```powershell
+.\scripts\import.ps1 -Folder "D:\path\to\photos" -ApiKey "..." -DryRun   # look first
+.\scripts\import.ps1 -Folder "D:\path\to\photos" -ApiKey "..."           # then for real
+```
+
+Then:
+
+1. [Keep the PC alive 24/7](docs/windows-host.md) — sleep, auto sign-in, Docker autostart
+2. [Remote access: phone + Mac via Tailscale](docs/remote-access.md)
+3. [Backups](docs/backups.md) — do this before deleting the original folder
+
+Linux host instead? `./scripts/setup.sh /path/to/library` does the same.
 
 ## Roadmap
 
 - [x] Phase 0 — repo, pinned Immich stack, setup scripts, docs
-- [ ] Phase 1 — server running on home PC, Tailscale up, phone backup of 23 GB done
+- [ ] Phase 1 — server running on home PC, 23 GB folder imported, Tailscale up, phone auto-backup on
 - [ ] Phase 2 — automated off-site backup (restic) + restore test
 - [ ] Phase 3 — our own extras on top of the Immich API:
   - daily "On this day" digest pushed to Telegram

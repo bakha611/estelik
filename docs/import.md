@@ -28,10 +28,15 @@ background processing on the PC (thumbnails, video transcoding, face + object de
    Takeout puts dates in sidecar JSON files; immich-go reads them so "On this day" lands
    on the right day. A plain folder upload would lose those dates.
 
-## C. They're in a folder on the PC/Mac/external drive
-```bash
-immich-go upload from-folder --server=http://estelik:2283 --api-key=YOUR_KEY /path/to/folder
+## C. They're in a folder on the home PC ← our case
+`scripts/import.ps1` downloads immich-go v0.32.0 and uploads over `localhost`, so 23 GB
+moves disk-to-disk with no Wi-Fi involved:
+```powershell
+.\scripts\import.ps1 -Folder "D:\path\to\photos" -ApiKey "..." -DryRun
+.\scripts\import.ps1 -Folder "D:\path\to\photos" -ApiKey "..." [-FoldersAsAlbums]
 ```
+Photos are **copied** into the library, so you briefly need ~46 GB free. Keep the
+original folder until backups exist; after that it can go.
 Or, to leave files where they are without copying: Admin → External Libraries
 (mount the folder into the container first).
 

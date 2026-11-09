@@ -3,3 +3,4 @@ server/library/
 server/postgres/
 *.log
 .DS_Store
+tools/

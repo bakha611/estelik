@@ -1,0 +1,13 @@
+# Windows (Docker Desktop) override.
+# Postgres cannot reliably keep its data on an NTFS bind mount (permission/fsync problems),
+# so on Windows the database lives in a Docker-managed volume inside WSL2 instead of ./postgres.
+# Photos (UPLOAD_LOCATION) stay on a normal Windows drive, e.g. D:/estelik/library.
+# Nightly DB dumps still land in UPLOAD_LOCATION/backups, so backing up the library folder
+# backs up the database too.
+services:
+  database:
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

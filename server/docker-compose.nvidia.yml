@@ -1,0 +1,25 @@
+# NVIDIA GPU override (enabled automatically by setup.ps1 when an NVIDIA card is found).
+# - Face recognition + smart search run on CUDA.
+# - The server container gets the GPU for video transcoding (NVENC). After first start,
+#   switch it on in Immich: Administration → Settings → Video Transcoding →
+#   Hardware Acceleration → NVENC.
+# Requires a current NVIDIA Windows driver; Docker Desktop passes the GPU through WSL2.
+services:
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION:-release}-cuda
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  immich-server:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu, compute, video]
